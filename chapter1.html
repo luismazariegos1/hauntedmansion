@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: The Spectral Whisper</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif; /* A more thematic font */
+            margin: 0;
+            padding: 0; /* KEY CHANGE: Removed all padding from body */
+            background-color: #1a1a1a; /* Dark background */
+            color: #f0f0f0; /* Light text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            /* KEY CHANGE: Align content to the very top */
+            justify-content: flex-start;
+            min-height: 100vh; /* Keep this to ensure background covers full height */
+
+            background-image: url('placeholders/chapter1_background.jpg'); /* Placeholder background image */
+            background-size: cover; /* Cover the entire body */
+            background-position: center; /* Center the background image */
+            background-attachment: fixed; /* Keep background fixed when scrolling */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Subtle text shadow for readability */
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent overlay for text */
+            /* KEY CHANGE: Adjusted padding for container - reduced top padding */
+            padding: 20px 30px 30px 30px;
+            border-radius: 10px;
+            max-width: 1200px; /* Increased max-width significantly */
+            width: 95%; /* Take up even more of the screen width */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* Glowing box shadow */
+            margin-top: 0; /* Ensures no extra margin pushing it down */
+            margin-bottom: 20px; /* Keep some margin at the bottom for spacing */
+            text-align: center;
+        }
+
+        /* Styling for introductory text paragraphs */
+        .intro-text-paragraph { /* Class to apply same style to both paragraphs */
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.5em; /* Both paragraphs are still bigger */
+            font-weight: bold; /* Both paragraphs are still bold */
+            color: #00ffff; /* Both paragraphs are still cyan */
+        }
+
+        .items-list { /* Class for the comma-separated list */
+            list-style-type: none; /* No bullets */
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em; /* Ensure list text size is consistent */
+        }
+
+        .qr-code {
+            margin: 30px auto;
+            border: 2px solid #00ffff; /* Cyan border for QR code */
+            border-radius: 5px;
+            display: block; /* Ensures centering with margin: auto */
+            max-width: 200px; /* Max width for the QR code image */
+            height: auto;
+        }
+
+        .riddle-section h2 {
+            color: #ff00ff; /* Magenta color for the riddle */
+            font

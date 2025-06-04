@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reward 4 - Interlude</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Make body take full viewport height */
+            background-color: black;
+            overflow: hidden; /* Prevent scrollbars */
+            color: white; /* For any potential text feedback */
+        }
+
+        /* Styling for the iframe container to make it responsive and fill the screen */
+        .video-container {
+            position: relative;
+            width: 100vw; /* Make container take full viewport width */
+            height: 100vh; /* Make container take full viewport height */
+            padding-bottom: 0; /* Remove padding-bottom since we're using fixed height */
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0; /* Remove default iframe border */
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <iframe id="rewardVideo"
+                src="https://drive.google.com/file/d/1lOCLvxPBXg-saHauUiOQtQdck4HvT73H/preview?autoplay=1"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+    </div>
+
+    <script>
+        const videoIframe = document.getElementById('rewardVideo');
+
+        // This duration should match your video's actual length.
+        const videoDuration = 06 * 1000; // 61,000 milliseconds = 1 minute, 1 second
+
+        let advanceTimeout = null; // Stores the timer ID, initialized to null
+        let timerStarted = false; // Flag to ensure the timer starts only once
+
+        // This function will be called when the page should advance
+        function advanceToChapter5() { // Changed function name
+            console.log('Video duration elapsed, advancing to chapter5.html'); // Changed log message
+            window.location.href = 'chapter5.html'; // Changed redirection target
+        }
+
+        // --- Spacebar Playback and Timer Start ---
+        document.addEventListener('keydown', (event) => {
+            if (event.key === ' ' || event.key === 'Spacebar') {
+                event.preventDefault(); // Prevent default spacebar scrolling
+
+                // Try to focus the iframe to allow user interaction with the player
+                videoIframe.focus();
+
+                // Start the timer ONLY if it hasn't been started yet.
+                // This assumes the spacebar press initiates playback for the user.
+                if (!timerStarted) {
+                    console.log('Spacebar pressed. Focusing video player and starting advancement timer.');
+                    advanceTimeout = setTimeout(advanceToChapter5, videoDuration); // Changed function call
+                    timerStarted = true; // Set flag to true to prevent multiple timer starts
+                } else {
+                    console.log('Spacebar pressed. Video player focused. Timer already started.');
+                }
+            }
+        });
+
+        // Optional: Clear the timeout if the user navigates away before it fires.
+        window.addEventListener('beforeunload', () => {
+            if (advanceTimeout) { // Only clear if the timer was actually set
+                clearTimeout(advanceTimeout);
+            }
+        });
+
+        // Fallback for very quick autoplay (unlikely for unmuted video),
+        // or if you want the timer to always start after a short delay
+        // if the user doesn't press spacebar.
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (!timerStarted) {
+                    console.log("No spacebar press detected, starting timer after initial load.");
+                    advanceTimeout = setTimeout(advanceToChapter5, videoDuration); // Changed function call
+                    timerStarted = true;
+                }
+            }, 3000); // Wait 3 seconds after load to see if user presses spacebar or autoplay "works"
+        });
+
+    </script>
+</body>
+</html>

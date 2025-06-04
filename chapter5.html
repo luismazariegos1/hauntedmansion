@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: The Final Transmission</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+
+            /* Chapter 5 background image */
+            background-image: url('placeholders/Background5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 20px 30px 30px 30px;
+            border-radius: 10px;
+            max-width: 1200px;
+            width: 95%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .intro-text-paragraph {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ffff;
+            text-align: center;
+        }
+
+        .items-list {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .riddle-section h2 {
+            color: #ff00ff;
+            font-size: 3em;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            font-family: 'Cinzel Decorative', cursive;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            width: 70%;
+            max-width: 400px;
+            margin-right: 10px;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.2em;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ff00ff;
+            transform: scale(1.05);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+
+        audio {
+            display: none;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Georgia&display=swap');
+    </style>
+</head>
+<body>
+    <audio id="chapter5Voice" src="placeholders/Voice5.mp3" autoplay></audio>
+    <audio id="chapter5Music" src="placeholders/Music5.mp3" autoplay loop></audio>
+
+    <div class="container">
+        <p class="intro-text-paragraph">
+            The time has come, mortals! With the orbs in the correct chromatic position, and the blessed planchette keeping you safe, you may talk to Gracey through the Ouija board. Steel yourselves, for the truth may chill you to the bone!
+        </p>
+        <p class="intro-text-paragraph">
+            The final piece of Master Gracey’s legacy awaits your grasp!
+        </p>
+
+        <p><strong>Things you can find:</strong></p>
+        <p class="items-list">
+            Ouija board, mysterious treasure (planchette), suspect list, cryptex, check from Gracey
+        </p>
+
+        <div class="riddle-section">
+            <h2>What is my master's final command?</h2>
+            <input type="text" id="answerInput" placeholder="Type your answer here" autofocus>
+            <button id="submitAnswer">Submit</button>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitAnswerButton = document.getElementById('submitAnswer');
+        const feedbackMessage = document.getElementById('feedback');
+
+        // Acceptable answers for Chapter 5
+        const correctAnswers = [
+            "avenge your master",
+            "avenge him",
+            "avenge gracey",
+            "tell ghost host avenge your master"
+        ];
+
+        submitAnswerButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+
+            // Normalize user input by removing common quote characters
+            const normalizedUserAnswer = userAnswer.replace(/["“”‘’]/g, '');
+
+            // --- FIX APPLIED HERE: Removed 'answer.includes(userAnswer)' ---
+            const isCorrect = correctAnswers.some(answer =>
+                normalizedUserAnswer === answer ||          // Checks for exact match (without quotes)
+                normalizedUserAnswer.includes(answer)        // Checks if user's input *contains* the full correct answer
+            );
+
+            // Also check for exact matches with specific quoted phrases if the original user input had them
+            const rawIsCorrect = [
+                `"avenge your master"`,
+                `tell ghost host "avenge your master"`
+            ].some(exactAnswer => userAnswer === exactAnswer);
+
+
+            if (isCorrect || rawIsCorrect) {
+                feedbackMessage.textContent = "Correct! The mystery is solved!";
+                feedbackMessage.style.color = "#00ffff"; // Cyan for success
+                setTimeout(() => {
+                    // Redirect to the final page (e.g., a "Game Over" or "Victory" page)
+                    window.location.href = 'victory.html'; // Or 'gameover.html', 'theend.html' etc.
+                }, 1500);
+            } else {
+                feedbackMessage.textContent = "Incorrect. The connection remains elusive. Try again.";
+                feedbackMessage.style.color = "#ff0000"; // Red for incorrect
+            }
+            answerInput.value = ''; // Clear the input field after submission
+        });
+
+        answerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                submitAnswerButton.click();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const voiceAudio = document.getElementById('chapter5Voice');
+            const musicAudio = document.getElementById('chapter5Music');
+
+            voiceAudio.play().catch(e => console.log("Voice audio autoplay blocked:", e.message));
+            musicAudio.play().catch(e => console.log("Music audio autoplay blocked:", e.message));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introductory Page</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Make body take full viewport height */
+            background-color: black;
+            overflow: hidden; /* Prevent scrollbars */
+            color: white; /* For any potential text feedback */
+        }
+
+        /* Styling for the iframe container to make it responsive and fill the screen */
+        .video-container {
+            position: relative;
+            width: 100vw; /* Make container take full viewport width */
+            height: 100vh; /* Make container take full viewport height */
+            padding-bottom: 0; /* Remove padding-bottom since we're using fixed height */
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0; /* Remove default iframe border */
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <iframe id="introVideo"
+                src="https://drive.google.com/file/d/1lOCLvxPBXg-saHauUiOQtQdck4HvT73H/preview?autoplay=1"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+    </div>
+
+    <script>
+        const videoIframe = document.getElementById('introVideo');
+
+        // ADJUST THIS DURATION TO MATCH YOUR VIDEO'S ACTUAL LENGTH!
+        const videoDuration = 06 * 1000; // 61,000 milliseconds = 1 minute, 1 second
+
+        let advanceTimeout = null; // Stores the timer ID, initialized to null
+        let timerStarted = false; // Flag to ensure the timer starts only once
+
+        // --- Spacebar Playback and Timer Start ---
+        document.addEventListener('keydown', (event) => {
+            if (event.key === ' ' || event.key === 'Spacebar') {
+                event.preventDefault(); // Prevent default spacebar scrolling (e.g., page scroll)
+
+                // Try to focus the iframe. This is crucial as Google Drive's player
+                // will likely only respond to spacebar for play/pause if it has focus.
+                videoIframe.focus();
+
+                // Start the timer ONLY if it hasn't been started yet.
+                // This means the 61-second countdown begins with the first spacebar press.
+                if (!timerStarted) {
+                    console.log('Spacebar pressed. Focusing video player and starting advancement timer.');
+                    advanceTimeout = setTimeout(() => {
+                        console.log('Video duration elapsed, advancing to chapter1.html');
+                        window.location.href = 'chapter1.html';
+                    }, videoDuration);
+                    timerStarted = true; // Set flag to true to prevent multiple timer starts
+                } else {
+                    console.log('Spacebar pressed. Video player focused. Timer already started.');
+                }
+            }
+        });
+
+        // Optional: Clear the timeout if the user navigates away before it fires.
+        window.addEventListener('beforeunload', () => {
+            if (advanceTimeout) { // Only clear if the timer was actually set
+                clearTimeout(advanceTimeout);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: The Ethereal Frequency</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0; /* Removed all padding from body */
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            justify-content: flex-start; /* Aligns content to the very top */
+            min-height: 100vh;
+
+            /* Placeholder for Chapter 4 background image */
+            background-image: url('placeholders/Bg4.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 20px 30px 30px 30px; /* Reduced top padding for container */
+            border-radius: 10px;
+            max-width: 1200px;
+            width: 95%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-top: 0; /* Ensures no extra margin pushing it down */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .intro-text-paragraph {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ffff;
+            text-align: center; /* Ensure text is centered */
+        }
+
+        .items-list {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .riddle-section h2 {
+            color: #ff00ff;
+            font-size: 3em;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            font-family: 'Cinzel Decorative', cursive;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            width: 70%;
+            max-width: 400px;
+            margin-right: 10px;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.2em;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ff00ff;
+            transform: scale(1.05);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+
+        audio {
+            display: none;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Georgia&display=swap');
+    </style>
+</head>
+<body>
+    <audio id="chapter4Voice" src="placeholders/Voice4.mp3" autoplay></audio>
+    <audio id="chapter4Music" src="placeholders/Music4.mp3" autoplay loop></audio>
+
+    <div class="container">
+        <p class="intro-text-paragraph">
+            Sometimes, the whispers of the departed can be heard if you listen closely, interfering with the very fabric of sound.
+        </p>
+        <p class="intro-text-paragraph">
+            However, you must find the EctoPhone and arrange the luminous orbs correctly before you can hear it! I hope you’ve done so already.
+        </p>
+        <p class="intro-text-paragraph">
+            Then, find two ethereal friends - one sinister, one dextrous - that have tuned into a ghostly frequency. It may unlock a secret compartment and give you a treasure most vital.
+        </p>
+
+        <p><strong>Things you can find:</strong></p>
+        <p class="items-list">
+            source of eerie sound, mysterious treasure, widow’s letter, blacklight, suspect list, cryptex
+        </p>
+
+        <div class="riddle-section">
+            <h2>Who was the killer?</h2>
+            <input type="text" id="answerInput" placeholder="Type your answer here" autofocus>
+            <button id="submitAnswer">Submit</button>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitAnswerButton = document.getElementById('submitAnswer');
+        const feedbackMessage = document.getElementById('feedback');
+
+        // Acceptable answers for Chapter 4
+        const correctAnswers = [
+            "wright",
+            "jonathan wright",
+            "right",
+            "jonathan right",
+            "jonathan"
+        ];
+
+        submitAnswerButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+
+            // --- FIX APPLIED HERE ---
+            // The logic now checks for exact matches or if the user's answer *contains* the full correct answer.
+            // It no longer accepts partial inputs where the correct answer *contains* the user's short input.
+            const isCorrect = correctAnswers.some(answer =>
+                userAnswer === answer ||         // User's input is an exact match for a correct answer
+                userAnswer.includes(answer)      // User's input contains a correct answer (e.g., "Jonathan Wright did it" contains "jonathan wright")
+            );
+
+            if (isCorrect) {
+                feedbackMessage.textContent = "Correct! The path forward is revealed.";
+                feedbackMessage.style.color = "#00ffff"; // Cyan for success
+                setTimeout(() => {
+                    // Redirect to the next reward page
+                    window.location.href = 'reward4.html';
+                }, 1500);
+            } else {
+                // Default text for wrong answer (no custom text specified, so using general one)
+                feedbackMessage.textContent = "Incorrect. That's not who we are talking about. Try again.";
+                feedbackMessage.style.color = "#ff0000"; // Red for incorrect
+            }
+            answerInput.value = ''; // Clear the input field after submission
+        });
+
+        answerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                submitAnswerButton.click();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const voiceAudio = document.getElementById('chapter4Voice');
+            const musicAudio = document.getElementById('chapter4Music');
+
+            voiceAudio.play().catch(e => console.log("Voice audio autoplay blocked:", e.message));
+            musicAudio.play().catch(e => console.log("Music audio autoplay blocked:", e.message));
+        });
+    </script>
+</body>
+</html>
