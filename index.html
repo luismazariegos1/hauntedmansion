@@ -3,88 +3,884 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introductory Page</title>
+    <title>Haunted Mansion Adventure</title>
     <style>
         body {
+            font-family: 'Georgia', serif;
             margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Make body take full viewport height */
-            background-color: black;
-            overflow: hidden; /* Prevent scrollbars */
-            color: white; /* For any potential text feedback */
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            justify-content: flex-start; /* Align content to the very top */
+            min-height: 100vh;
+            background-image: url('placeholders/chapter1_background.jpg'); /* Default background */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            overflow: hidden; /* Prevent scrollbars initially */
         }
 
-        /* Styling for the iframe container to make it responsive and fill the screen */
-        .video-container {
+        .section {
+            display: none; /* All sections hidden by default */
+            width: 100%;
+            height: 100vh; /* Make sections take full viewport height */
+            justify-content: center; /* Center content horizontally for sections */
+            align-items: flex-start; /* Align content to the very top within sections */
+            flex-direction: column;
             position: relative;
-            width: 100vw; /* Make container take full viewport width */
-            height: 100vh; /* Make container take full viewport height */
-            padding-bottom: 0; /* Remove padding-bottom since we're using fixed height */
-            overflow: hidden;
-            background: #000;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* Specific backgrounds for each section (if desired, otherwise body background applies) */
+        #chapter1 { background-image: url('placeholders/chapter1_background.jpg'); }
+        #chapter2 { background-image: url('placeholders/chapter2_background.jpg'); }
+        #chapter3 { background-image: url('placeholders/chapter3_background.jpg'); }
+        #chapter4 { background-image: url('placeholders/Bg4.jpg'); }
+        #chapter5 { background-image: url('placeholders/Background5.jpg'); }
+        #victoryScreen { background-image: url('placeholders/victory_background.jpg'); }
+
+        /* Each reward section will contain its own video player, so they need video-container styles */
+        #reward1Section, #reward2Section, #reward3Section, #reward4Section, #reward5Section {
+            background-color: black; /* Ensure black background for video sections */
+            display: none; /* Hidden by default, shown by JS */
+            align-items: center; /* Center video iframe */
+            justify-content: center; /* Center video iframe */
+        }
+
+
+        .intro-screen {
+            display: flex; /* Only intro screen visible initially */
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.7);
+            /* Centering on intro screen */
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Ensure content stacks vertically */
+        }
+
+        .intro-screen h1 {
+            font-size: 4.5em; /* Made bigger */
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+        }
+
+        .intro-screen button {
+            padding: 20px 40px;
+            font-size: 2.2em; /* Made bigger */
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 30px;
+        }
+
+        .intro-screen button:hover {
+            background-color: #ff00ff;
+            transform: scale(1.05);
+        }
+
+        /* Video container and iframe for full-screen video */
+        .video-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-color: black;
+            display: flex; /* Use flex to ensure iframe is centered */
+            justify-content: center;
+            align-items: center;
         }
 
         .video-container iframe {
-            position: absolute;
+            position: absolute; /* Occupy entire parent */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: 0; /* Remove default iframe border */
+            border: 0;
+            max-width: none;
+            max-height: none;
         }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.75);
+            padding: 10px 15px; /* Reduced padding for less side margin and top flush */
+            border-radius: 10px;
+            max-width: 98%; /* Increased max-width for less side margin */
+            width: 98%; /* Adjusted width percentage */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to the very top within the container */
+            align-items: center; /* Horizontally center content within the container */
+            min-height: calc(100vh - 10px); /* Fill most of the viewport height with minimal top/bottom padding (10px total for margins) */
+            box-sizing: border-box; /* Include padding in height calculation */
+            margin-top: 5px; /* Small margin from the very top */
+            margin-bottom: 5px; /* Small margin from the very bottom */
+            align-self: center; /* Center the container itself within its flex parent (.section) */
+        }
+
+        /* Styling for introductory text paragraphs */
+        .intro-text-paragraph {
+            line-height: 1.3; /* Further reduced line height */
+            margin-bottom: 8px; /* Further reduced space between paragraphs */
+            font-size: 1.7em; /* INCREASED font size for better utilization */
+            font-weight: bold;
+            color: #00ffff;
+            text-align: center; /* Default to center for single column */
+        }
+
+        /* Two-column layout for specific intro texts, particularly for Chapter 3 */
+        .intro-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Reduced space between columns */
+            margin-bottom: 10px; /* Reduced margin below columns */
+            width: 100%;
+            justify-content: center;
+        }
+
+        .intro-column-left,
+        .intro-column-right {
+            flex: 1;
+            min-width: 400px; /* Increased min-width for columns */
+            text-align: left;
+        }
+        /* Specific alignment for intro paragraphs within columns */
+        .intro-columns .intro-text-paragraph {
+            text-align: left;
+            font-size: 1.6em; /* Slightly smaller for columns, but still larger than before */
+        }
+
+
+        .items-list {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 10px; /* Reduced margin */
+            margin-bottom: 15px; /* Reduced margin */
+            font-style: italic;
+            font-size: 1.4em; /* FURTHER INCREASED font size for item list */
+            line-height: 1.2; /* Tighter line height for list */
+        }
+
+        .qr-code {
+            margin: 15px auto; /* Reduced margin */
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            display: block;
+            max-width: 220px; /* Slightly larger QR code */
+            height: auto;
+        }
+
+        .riddle-section h2 {
+            color: #ff00ff;
+            font-size: 3.6em; /* FURTHER INCREASED font size for riddle title */
+            margin-top: 20px; /* Reduced margin */
+            margin-bottom: 15px; /* Reduced margin */
+            font-family: 'Cinzel Decorative', cursive;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+        }
+
+        input[type="text"] {
+            padding: 14px 18px; /* Increased padding for input field */
+            width: 80%; /* Adjusted width for input field */
+            max-width: 500px; /* Adjusted max-width */
+            margin-right: 10px;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.4em; /* Increased font size for input */
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        button {
+            padding: 14px 28px; /* Increased padding for buttons */
+            background-color: #00ffff;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.4em; /* Increased font size for buttons */
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 18px; /* Space above button */
+        }
+
+        button:hover {
+            background-color: #ff00ff;
+            transform: scale(1.05);
+        }
+
+        #feedback {
+            margin-top: 12px; /* Reduced margin */
+            font-size: 1.5em; /* Increased font size for feedback */
+            font-weight: bold;
+            min-height: 1.8em; /* Adjusted min-height */
+        }
+
+        /* Google Fonts Import */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Georgia&display=swap');
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <iframe id="introVideo"
-                src="https://drive.google.com/file/d/1lOCLvxPBXg-saHauUiOQtQdck4HvT73H/preview?autoplay=1"
-                frameborder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen>
-        </iframe>
+    <audio id="chapter1Voice" src="voice1.mp3"></audio>
+    <audio id="chapter1Music" src="music1.mp3" loop></audio>
+    <audio id="chapter2Voice" src="placeholders/voice2.mp3"></audio>
+    <audio id="chapter2Music" src="placeholders/chapter2_music.mp4" loop></audio>
+    <audio id="chapter3Voice" src="placeholders/voice3.mp3"></audio>
+    <audio id="chapter3Music" src="placeholders/chapter3_music.mp4" loop></audio>
+    <audio id="chapter4Voice" src="placeholders/voice4.mp3"></audio>
+    <audio id="chapter4Music" src="placeholders/chapter4_music.mp4" loop></audio>
+    <audio id="chapter5Voice" src="placeholders/voice5.mp3"></audio>
+    <audio id="chapter5Music" src="placeholders/chapter5_music.mp4" loop></audio>
+    <audio id="rewardMusic" src="placeholders/reward_music.mp4" loop></audio>
+
+
+    <div id="introScreen" class="section intro-screen">
+        <h1>Welcome to the Haunted Mansion</h1>
+        <button id="startButton">Enter the Haunted Mansion</button>
+    </div>
+
+    <div id="videoSection" class="section video-container">
+        </div>
+
+    <div id="chapter1" class="section">
+        <div class="container">
+            <p class="intro-text-paragraph">
+                Beware! There are restless spirits around! Use the ghost detector to find them. I can reveal there are only two haunted items tonight for which you'll need to detect ghosts. What could they be?
+            </p>
+            <img src="placeholders/qr_code_app.png" alt="QR Code to Ghost Detector App" class="qr-code">
+            <p class="intro-text-paragraph">
+                Once you have found the first spectral whisper, you may be able to solve the mystery of their untimely passing! Aid this restless spirit in uncovering the truth of their demise, and they may guide your path forward.
+            </p>
+            <p><strong>Things you can find:</strong></p>
+            <p class="items-list">
+                EctoPhone, full tarot card deck, tavern advertisement, widow’s letter, crystal ball riddle, singing busts, blacklight, tavern memento, message from Donna, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, musical note, handkerchief, cryptex
+            </p>
+            <div class="riddle-section">
+                <h2>Who killed Constance?</h2>
+                <input type="text" id="chapter1AnswerInput" placeholder="Type your answer here" autofocus>
+                <button id="chapter1SubmitAnswer">Submit</button>
+                <p id="chapter1Feedback"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward1Section" class="section video-container">
+        </div>
+
+    <div id="chapter2" class="section">
+        <div class="container">
+            <p class="intro-text-paragraph">
+                The singing busts beckon you closer, their melodies a haunting chorus. A spectral whisper drifts from within their hollow forms, a riddle echoing the fate of a mournful musician. What instrument did the organist play that led to his downfall?
+            </p>
+            <p><strong>Things you can find:</strong></p>
+            <p class="items-list">
+                EctoPhone, full tarot card deck, tavern advertisement, widow’s letter, crystal ball riddle, singing busts, blacklight, tavern memento, message from Donna, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, musical note, handkerchief, cryptex
+            </p>
+            <div class="riddle-section">
+                <h2>What was the organist’s name?</h2>
+                <input type="text" id="chapter2AnswerInput" placeholder="Type your answer here" autofocus>
+                <button id="chapter2SubmitAnswer">Submit</button>
+                <p id="chapter2Feedback"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward2Section" class="section video-container">
+        </div>
+
+    <div id="chapter3" class="section">
+        <div class="container">
+            <div class="intro-columns">
+                <div class="intro-column-left">
+                    <p class="intro-text-paragraph">
+                        Serpents and spiders, tail of a rat,<br>
+                        Call in the spirits, wherever they’re at! <br>
+                        We welcome the shadows deep and old,<br>
+                        To untangle the web, a story to unfold.<br>
+                        They speak of Nitrokoff, a puppet, not the hand…. <br>
+                        A greater darkness lurks within this haunted land!
+                    </p>
+                </div>
+                <div class="intro-column-right">
+                    <p class="intro-text-paragraph">
+                        With aged prediction I shall weave,<br>
+                        and from this villainous deck of cards, secrets retrieve.<br>
+                        Combining spells and visions, so the truth may start to bloom,<br>
+                        I'll divine another victim, from out of the gloom!
+                    </p>
+                </div>
+            </div>
+
+            <p><strong>Things you can find:</strong></p>
+            <p class="items-list">
+                EctoPhone, full tarot card deck, widow’s letter, crystal ball riddle, blacklight, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, handkerchief, cryptex
+            </p>
+
+            <div class="riddle-section">
+                <h2>Who was this victim?</h2>
+                <input type="text" id="chapter3AnswerInput" placeholder="Type your answer here" autofocus>
+                <button id="chapter3SubmitAnswer">Submit</button>
+                <p id="chapter3Feedback"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward3Section" class="section video-container">
+        </div>
+
+    <div id="chapter4" class="section">
+        <div class="container">
+            <p class="intro-text-paragraph">
+                The ghostly presence intensifies, emanating from the EctoPhone. A faint voice whispers, guiding your gaze to a hidden compartment within the phone. Inside, you discover a piece of paper, an ancient scroll. It is a series of seemingly random numbers. The answer to this riddle lies in the numbers you found.
+            </p>
+            <p><strong>Things you can find:</strong></p>
+            <p class="items-list">
+                EctoPhone, full tarot card deck, tavern advertisement, widow’s letter, crystal ball riddle, singing busts, blacklight, tavern memento, message from Donna, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, musical note, handkerchief, cryptex
+            </p>
+            <div class="riddle-section">
+                <h2>What is the answer to the riddle?</h2>
+                <input type="text" id="chapter4AnswerInput" placeholder="Type your answer here" autofocus>
+                <button id="chapter4SubmitAnswer">Submit</button>
+                <p id="chapter4Feedback"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward4Section" class="section video-container">
+        </div>
+
+    <div id="chapter5" class="section">
+        <div class="container">
+            <p class="intro-text-paragraph">
+                The air is thick with anticipation, the final spectral whisper resonating with profound urgency. The ultimate haunted item awaits, the culmination of your journey. Face the last enigma to bring true peace to the restless soul.
+            </p>
+            <p><strong>Things you can find:</strong></p>
+            <p class="items-list">
+                EctoPhone, full tarot card deck, tavern advertisement, widow’s letter, crystal ball riddle, singing busts, blacklight, tavern memento, message from Donna, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, musical note, handkerchief, cryptex
+            </p>
+            <div class="riddle-section">
+                <h2>What is the message?</h2>
+                <input type="text" id="chapter5AnswerInput" placeholder="Type your answer here" autofocus>
+                <button id="chapter5SubmitAnswer">Submit</button>
+                <p id="chapter5Feedback"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="reward5Section" class="section video-container">
+        </div>
+
+    <div id="victoryScreen" class="section intro-screen">
+        <h1>Adventure Complete!</h1>
+        <p class="intro-text-paragraph">You have bravely faced the spirits and solved the mansion's mysteries!</p>
+        <p class="intro-text-paragraph">Thank you for playing!</p>
     </div>
 
     <script>
-        const videoIframe = document.getElementById('introVideo');
+        // Store all sections and elements
+        const sections = {
+            introScreen: document.getElementById('introScreen'),
+            videoSection: document.getElementById('videoSection'),
+            chapter1: document.getElementById('chapter1'),
+            reward1Section: document.getElementById('reward1Section'),
+            chapter2: document.getElementById('chapter2'),
+            reward2Section: document.getElementById('reward2Section'),
+            chapter3: document.getElementById('chapter3'),
+            reward3Section: document.getElementById('reward3Section'),
+            chapter4: document.getElementById('chapter4'),
+            reward4Section: document.getElementById('reward4Section'),
+            chapter5: document.getElementById('chapter5'),
+            reward5Section: document.getElementById('reward5Section'), // Added for final reward video
+            victoryScreen: document.getElementById('victoryScreen')
+        };
 
-        // ADJUST THIS DURATION TO MATCH YOUR VIDEO'S ACTUAL LENGTH!
-        const videoDuration = 06 * 1000; // 61,000 milliseconds = 1 minute, 1 second
+        const startButton = document.getElementById('startButton');
 
-        let advanceTimeout = null; // Stores the timer ID, initialized to null
-        let timerStarted = false; // Flag to ensure the timer starts only once
+        // Audio elements
+        const chapter1Voice = document.getElementById('chapter1Voice');
+        const chapter1Music = document.getElementById('chapter1Music');
+        const chapter2Voice = document.getElementById('chapter2Voice');
+        const chapter2Music = document.getElementById('chapter2Music');
+        const chapter3Voice = document.getElementById('chapter3Voice');
+        const chapter3Music = document.getElementById('chapter3Music');
+        const chapter4Voice = document.getElementById('chapter4Voice');
+        const chapter4Music = document.getElementById('chapter4Music');
+        const chapter5Voice = document.getElementById('chapter5Voice');
+        const chapter5Music = document.getElementById('chapter5Music');
+        const rewardMusic = document.getElementById('rewardMusic');
 
-        // --- Spacebar Playback and Timer Start ---
+        // Riddle inputs and buttons
+        const chapter1AnswerInput = document.getElementById('chapter1AnswerInput');
+        const chapter1SubmitAnswer = document.getElementById('chapter1SubmitAnswer');
+        const chapter1Feedback = document.getElementById('chapter1Feedback');
+
+        const chapter2AnswerInput = document.getElementById('chapter2AnswerInput');
+        const chapter2SubmitAnswer = document.getElementById('chapter2SubmitAnswer');
+        const chapter2Feedback = document.getElementById('chapter2Feedback');
+
+        const chapter3AnswerInput = document.getElementById('chapter3AnswerInput');
+        const chapter3SubmitAnswer = document.getElementById('chapter3SubmitAnswer');
+        const chapter3Feedback = document.getElementById('chapter3Feedback');
+
+        const chapter4AnswerInput = document.getElementById('chapter4AnswerInput');
+        const chapter4SubmitAnswer = document.getElementById('chapter4SubmitAnswer');
+        const chapter4Feedback = document.getElementById('chapter4Feedback');
+
+        const chapter5AnswerInput = document.getElementById('chapter5AnswerInput');
+        const chapter5SubmitAnswer = document.getElementById('chapter5SubmitAnswer');
+        const chapter5Feedback = document.getElementById('chapter5Feedback');
+
+
+        // Game state variables
+        let currentSectionIndex = 0;
+        const orderedSections = [
+            'introScreen', 'videoSection', 'chapter1', 'reward1Section',
+            'chapter2', 'reward2Section', 'chapter3', 'reward3Section',
+            'chapter4', 'reward4Section', 'chapter5', 'reward5Section', 'victoryScreen'
+        ];
+        let videoTimeout = null; // To store the timer for video advancement
+        let youtubePlayer; // Global YouTube player object
+
+        // Video IDs - UPDATED WITH YOUR PROVIDED IDs
+        const youtubeVideoIds = {
+            intro: 'mhYEptUpcco',
+            reward1: 'J4R2jYkCU1M',
+            reward2: 'NA0xAPPWpDM',
+            reward3: 'nLnCWyW8cIg',
+            reward4: 'VjfPLRu5wLk',
+            reward5: 'Zw1o7tx_vIA' // Final reward video
+        };
+
+        const VIDEO_FALLBACK_DURATION = 2 * 60 * 1000 + 5 * 1000; // 2 minutes 5 seconds in ms (for testing, consider shorter)
+
+        // Function to show a specific section and hide others
+        function showSection(sectionId) {
+            Object.values(sections).forEach(section => {
+                section.style.display = 'none';
+            });
+            sections[sectionId].style.display = 'flex'; // Use flex to center content
+            // Stop any existing YouTube player and clear timeout
+            if (youtubePlayer && typeof youtubePlayer.stopVideo === 'function') {
+                youtubePlayer.stopVideo();
+                youtubePlayer.destroy(); // Destroy to prevent issues with re-init
+                youtubePlayer = null; // Clear the player instance
+            }
+            if (videoTimeout) {
+                clearTimeout(videoTimeout);
+                videoTimeout = null;
+            }
+            // Stop all music and voice audio when changing sections, then start relevant ones
+            stopAllAudio();
+
+            // Focus on the first input field if it's a riddle section
+            if (sectionId.startsWith('chapter')) {
+                const inputElement = document.getElementById(`${sectionId}AnswerInput`);
+                if (inputElement) {
+                    setTimeout(() => inputElement.focus(), 100); // Small delay to ensure render
+                }
+            }
+        }
+
+        // Function to stop all audio
+        function stopAllAudio() {
+            [chapter1Voice, chapter1Music, chapter2Voice, chapter2Music, chapter3Voice, chapter3Music,
+             chapter4Voice, chapter4Music, chapter5Voice, chapter5Music, rewardMusic].forEach(audio => {
+                if (audio && !audio.paused) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+        }
+
+        // Function to play music for a given chapter
+        function playChapterMusic(chapterNum) {
+            const musicElement = document.getElementById(`chapter${chapterNum}Music`);
+            if (musicElement) {
+                musicElement.play().catch(e => console.log(`Music for Chapter ${chapterNum} autoplay blocked:`, e.message));
+            }
+        }
+
+        // Function to play voice for a given chapter
+        function playChapterVoice(chapterNum) {
+            const voiceElement = document.getElementById(`chapter${chapterNum}Voice`);
+            if (voiceElement) {
+                voiceElement.play().catch(e => console.log(`Voice for Chapter ${chapterNum} playback blocked:`, e.message));
+            }
+        }
+
+        // Function to play reward music
+        function playRewardMusic() {
+            if (rewardMusic) {
+                rewardMusic.play().catch(e => console.log("Reward music autoplay blocked:", e.message));
+            }
+        }
+
+        // YouTube API ready function
+        function onYouTubeIframeAPIReady() {
+            // This function is called automatically by the YouTube IFrame API
+            // once it's loaded.
+        }
+
+        // Load YouTube IFrame API asynchronously
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api"; // CORRECT YouTube API URL
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Function to load and play a YouTube video
+        function loadYouTubeVideo(containerId, videoId, onEndCallback) {
+            const container = document.getElementById(containerId);
+            // Clear previous iframe if it exists to ensure fresh player
+            container.innerHTML = ''; // This ensures the container is empty before creating a new player
+
+            // Create a new div element for the player within the container
+            const playerDiv = document.createElement('div');
+            playerDiv.id = `Youtubeer-${videoId}`; // Unique ID for each player div
+            container.appendChild(playerDiv);
+
+            youtubePlayer = new YT.Player(playerDiv.id, { // Pass the ID of the new div
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    'enablejsapi': 1
+                },
+                events: {
+                    'onReady': (event) => {
+                        event.target.playVideo();
+                        if (videoTimeout) {
+                            clearTimeout(videoTimeout);
+                        }
+                        videoTimeout = setTimeout(() => {
+                            console.log(`Fallback timer for video ${videoId} elapsed.`);
+                            if (onEndCallback) onEndCallback();
+                        }, VIDEO_FALLBACK_DURATION);
+                    },
+                    'onStateChange': (event) => {
+                        if (event.data === YT.PlayerState.ENDED) {
+                            console.log(`Video ${videoId} ended naturally.`);
+                            if (videoTimeout) {
+                                clearTimeout(videoTimeout);
+                            }
+                            if (onEndCallback) onEndCallback();
+                        }
+                    },
+                    'onError': (event) => {
+                        console.error(`Youtubeer Error for ${videoId}:`, event.data);
+                        // Even on error, advance after a short delay
+                        if (videoTimeout) {
+                            clearTimeout(videoTimeout);
+                        }
+                        videoTimeout = setTimeout(() => {
+                            console.log(`Error detected for video ${videoId}, advancing after fallback.`);
+                            if (onEndCallback) onEndCallback();
+                        }, 5000); // 5 seconds to skip a problematic video
+                    }
+                }
+            });
+        }
+
+
+        // Function to advance to the next section
+        function advanceSection() {
+            // Stop any ongoing video
+            if (youtubePlayer && typeof youtubePlayer.stopVideo === 'function') {
+                youtubePlayer.stopVideo();
+                // Destroy the player to prevent issues with re-creating on the same element
+                if (typeof youtubePlayer.destroy === 'function') {
+                    youtubePlayer.destroy();
+                }
+                youtubePlayer = null; // Clear the player reference
+            }
+            if (videoTimeout) {
+                clearTimeout(videoTimeout);
+                videoTimeout = null;
+            }
+
+            currentSectionIndex++;
+            if (currentSectionIndex >= orderedSections.length) {
+                currentSectionIndex = orderedSections.length - 1; // Stay on victory screen or final reward
+            }
+            const nextSectionId = orderedSections[currentSectionIndex];
+            showSection(nextSectionId);
+
+            // Handle media playback based on the next section
+            if (nextSectionId === 'chapter1') {
+                playChapterMusic(1);
+                playChapterVoice(1);
+            } else if (nextSectionId === 'reward1Section') {
+                playRewardMusic();
+                // FIX APPLIED HERE: Load into 'reward1Section'
+                loadYouTubeVideo('reward1Section', youtubeVideoIds.reward1, advanceSection);
+            } else if (nextSectionId === 'chapter2') {
+                playChapterMusic(2);
+                playChapterVoice(2);
+            } else if (nextSectionId === 'reward2Section') {
+                playRewardMusic();
+                // FIX APPLIED HERE: Load into 'reward2Section'
+                loadYouTubeVideo('reward2Section', youtubeVideoIds.reward2, advanceSection);
+            } else if (nextSectionId === 'chapter3') {
+                playChapterMusic(3);
+                playChapterVoice(3);
+            } else if (nextSectionId === 'reward3Section') {
+                playRewardMusic();
+                // FIX APPLIED HERE: Load into 'reward3Section'
+                loadYouTubeVideo('reward3Section', youtubeVideoIds.reward3, advanceSection);
+            } else if (nextSectionId === 'chapter4') {
+                playChapterMusic(4);
+                playChapterVoice(4);
+            } else if (nextSectionId === 'reward4Section') {
+                playRewardMusic();
+                // FIX APPLIED HERE: Load into 'reward4Section'
+                loadYouTubeVideo('reward4Section', youtubeVideoIds.reward4, advanceSection);
+            } else if (nextSectionId === 'chapter5') {
+                playChapterMusic(5);
+                playChapterVoice(5);
+            } else if (nextSectionId === 'reward5Section') { // Final Reward Video
+                playRewardMusic();
+                // FIX APPLIED HERE: Load into 'reward5Section'
+                loadYouTubeVideo('reward5Section', youtubeVideoIds.reward5, advanceSection); // Advance to victory after this
+            }
+            // For victoryScreen, all music should already be stopped by showSection.
+        }
+
+        // Function to go back to the previous section
+        function goBackSection() {
+            // Cannot go back from intro screen or if already at the beginning
+            if (currentSectionIndex <= 0) return;
+
+            const currentSectionId = orderedSections[currentSectionIndex];
+            // Determine the target index
+            let targetIndex = currentSectionIndex - 1;
+
+            // If currently on a riddle page (e.g., chapter1), go back to its preceding video section (e.g., videoSection/rewardXSection).
+            if (currentSectionId.startsWith('chapter')) {
+                // Find the previous section that is a video section
+                let foundVideoSection = false;
+                for (let i = currentSectionIndex - 1; i >= 0; i--) {
+                    if (orderedSections[i].includes('Section') && !orderedSections[i].startsWith('chapter')) {
+                        targetIndex = i;
+                        foundVideoSection = true;
+                        break;
+                    }
+                }
+                if (!foundVideoSection) { // If no video section found, go to intro screen
+                    targetIndex = 0; // Go to introScreen
+                }
+            }
+
+            currentSectionIndex = targetIndex;
+            const prevSectionId = orderedSections[currentSectionIndex];
+            showSection(prevSectionId);
+
+            // Re-load the video if going back to a video section
+            if (prevSectionId === 'videoSection') { // Intro video
+                loadYouTubeVideo('videoSection', youtubeVideoIds.intro, advanceSection);
+            } else if (prevSectionId === 'reward1Section') {
+                loadYouTubeVideo('reward1Section', youtubeVideoIds.reward1, advanceSection);
+            } else if (prevSectionId === 'reward2Section') {
+                loadYouTubeVideo('reward2Section', youtubeVideoIds.reward2, advanceSection);
+            } else if (prevSectionId === 'reward3Section') {
+                loadYouTubeVideo('reward3Section', youtubeVideoIds.reward3, advanceSection);
+            } else if (prevSectionId === 'reward4Section') {
+                loadYouTubeVideo('reward4Section', youtubeVideoIds.reward4, advanceSection);
+            } else if (prevSectionId === 'reward5Section') {
+                loadYouTubeVideo('reward5Section', youtubeVideoIds.reward5, advanceSection);
+            }
+        }
+
+
+        // Event Listeners
+
+        // Start Button / Spacebar for Intro
+        startButton.addEventListener('click', () => {
+            currentSectionIndex = orderedSections.indexOf('videoSection');
+            showSection('videoSection');
+            // Ensure YouTube API is loaded before loading video
+            if (typeof YT !== 'undefined' && YT.Player) {
+                loadYouTubeVideo('videoSection', youtubeVideoIds.intro, advanceSection);
+            } else {
+                // Fallback or wait for API to load if not ready
+                window.onYouTubeIframeAPIReady = () => {
+                    loadYouTubeVideo('videoSection', youtubeVideoIds.intro, advanceSection);
+                };
+            }
+        });
+
         document.addEventListener('keydown', (event) => {
-            if (event.key === ' ' || event.key === 'Spacebar') {
-                event.preventDefault(); // Prevent default spacebar scrolling (e.g., page scroll)
-
-                // Try to focus the iframe. This is crucial as Google Drive's player
-                // will likely only respond to spacebar for play/pause if it has focus.
-                videoIframe.focus();
-
-                // Start the timer ONLY if it hasn't been started yet.
-                // This means the 61-second countdown begins with the first spacebar press.
-                if (!timerStarted) {
-                    console.log('Spacebar pressed. Focusing video player and starting advancement timer.');
-                    advanceTimeout = setTimeout(() => {
-                        console.log('Video duration elapsed, advancing to chapter1.html');
-                        window.location.href = 'chapter1.html';
-                    }, videoDuration);
-                    timerStarted = true; // Set flag to true to prevent multiple timer starts
-                } else {
-                    console.log('Spacebar pressed. Video player focused. Timer already started.');
+            if (event.code === 'Space' && currentSectionIndex === orderedSections.indexOf('introScreen')) {
+                event.preventDefault(); // Prevent default spacebar action (e.g., page scroll)
+                startButton.click(); // Simulate click on start button
+            } else if (event.key === 'ArrowRight') { // Skip video (not riddle)
+                event.preventDefault();
+                const currentSectionId = orderedSections[currentSectionIndex];
+                // Only skip if it's a video section (e.g., videoSection, rewardXSection)
+                if (currentSectionId.includes('Section') && !currentSectionId.startsWith('chapter')) {
+                    advanceSection();
+                }
+            } else if (event.key === 'ArrowLeft') { // Go back
+                event.preventDefault();
+                goBackSection();
+            } else if (event.code === 'Space') { // Spacebar to play/pause current video
+                const currentSectionId = orderedSections[currentSectionIndex];
+                // Only act if currently on a video section and a player exists
+                if (currentSectionId.includes('Section') && !currentSectionId.startsWith('chapter') && youtubePlayer) {
+                    event.preventDefault();
+                    if (youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING || youtubePlayer.getPlayerState() === YT.PlayerState.BUFFERING) {
+                        youtubePlayer.pauseVideo();
+                    } else {
+                        youtubePlayer.playVideo();
+                    }
                 }
             }
         });
 
-        // Optional: Clear the timeout if the user navigates away before it fires.
-        window.addEventListener('beforeunload', () => {
-            if (advanceTimeout) { // Only clear if the timer was actually set
-                clearTimeout(advanceTimeout);
+        // Riddle Logic - Chapter 1
+        const correctAnswersChapter1 = ["alexander nitrokoff", "nitrokoff", "alexander"];
+        chapter1SubmitAnswer.addEventListener('click', () => {
+            const userAnswer = chapter1AnswerInput.value.trim().toLowerCase();
+            const isCorrect = correctAnswersChapter1.some(answer => userAnswer.includes(answer));
+
+            if (isCorrect) {
+                chapter1Feedback.textContent = "Correct! The spectral path clears...";
+                chapter1Feedback.style.color = "#00ffff";
+                setTimeout(() => {
+                    advanceSection(); // Advance to Reward 1
+                }, 1500);
+            } else {
+                chapter1Feedback.textContent = "Incorrect. The spirits remain restless. Try again.";
+                chapter1Feedback.style.color = "#ff0000";
+            }
+            chapter1AnswerInput.value = '';
+        });
+        chapter1AnswerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                chapter1SubmitAnswer.click();
             }
         });
+
+        // Riddle Logic - Chapter 2
+        const correctAnswersChapter2 = ["nemo the organist", "nemo", "organist"];
+        chapter2SubmitAnswer.addEventListener('click', () => {
+            const userAnswer = chapter2AnswerInput.value.trim().toLowerCase();
+            const isCorrect = correctAnswersChapter2.some(answer => userAnswer.includes(answer));
+
+            if (isCorrect) {
+                chapter2Feedback.textContent = "Correct! The spirits' sing the truth...";
+                chapter2Feedback.style.color = "#00ffff";
+                setTimeout(() => {
+                    advanceSection(); // Advance to Reward 2
+                }, 1500);
+            } else {
+                chapter2Feedback.textContent = "Incorrect. The spirits remain silent. Try again.";
+                chapter2Feedback.style.color = "#ff0000";
+            }
+            chapter2AnswerInput.value = '';
+        });
+        chapter2AnswerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                chapter2SubmitAnswer.click();
+            }
+        });
+
+        // Riddle Logic - Chapter 3 (Restored from your provided chapter3.html)
+        const correctAnswersChapter3 = ["leftee", "lefty", "left"];
+        chapter3SubmitAnswer.addEventListener('click', () => {
+            const userAnswer = chapter3AnswerInput.value.trim().toLowerCase();
+            const isCorrect = correctAnswersChapter3.some(answer => userAnswer === answer || userAnswer.includes(answer));
+
+            if (isCorrect) {
+                chapter3Feedback.textContent = "Correct! The spirits guide your hand.";
+                chapter3Feedback.style.color = "#00ffff";
+                setTimeout(() => {
+                    advanceSection(); // Advance to Reward 3
+                }, 1500);
+            } else {
+                chapter3Feedback.textContent = "Incorrect. Look at the first rune of each card.";
+                chapter3Feedback.style.color = "#ff0000";
+            }
+            chapter3AnswerInput.value = '';
+        });
+        chapter3AnswerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                chapter3SubmitAnswer.click();
+            }
+        });
+
+        // Riddle Logic - Chapter 4
+        const correctAnswersChapter4 = ["jonathan wright", "jonathan", "wright"];
+        chapter4SubmitAnswer.addEventListener('click', () => {
+            const userAnswer = chapter4AnswerInput.value.trim().toLowerCase();
+            const isCorrect = correctAnswersChapter4.some(answer => userAnswer.includes(answer));
+
+            if (isCorrect) {
+                chapter4Feedback.textContent = "Correct! The path forward is revealed.";
+                chapter4Feedback.style.color = "#00ffff";
+                setTimeout(() => {
+                    advanceSection(); // Advance to Reward 4
+                }, 1500);
+            } else {
+                chapter4Feedback.textContent = "Incorrect. That's not who we are talking about. Try again.";
+                chapter4Feedback.style.color = "#ff0000";
+            }
+            chapter4AnswerInput.value = '';
+        });
+        chapter4AnswerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                chapter4SubmitAnswer.click();
+            }
+        });
+
+        // Riddle Logic - Chapter 5
+        const correctAnswersChapter5 = ["tell ghost host avenge your master", "avenge your master"];
+        chapter5SubmitAnswer.addEventListener('click', () => {
+            const userAnswer = chapter5AnswerInput.value.trim().toLowerCase();
+            const isCorrect = correctAnswersChapter5.some(answer =>
+                userAnswer === answer || userAnswer.includes(answer)
+            );
+
+            if (isCorrect) {
+                chapter5Feedback.textContent = "I see what I must do now";
+                chapter5Feedback.style.color = "#00ffff";
+                setTimeout(() => {
+                    advanceSection(); // Advance to Reward 5 (final video)
+                }, 1500);
+            } else {
+                chapter5Feedback.textContent = "Hmm...that doesn't sound like my master.";
+                chapter5Feedback.style.color = "#ff0000";
+            }
+            chapter5AnswerInput.value = '';
+        });
+        chapter5AnswerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                chapter5SubmitAnswer.click();
+            }
+        });
+
+        // Initial setup: Show the intro screen
+        showSection('introScreen');
     </script>
 </body>
 </html>

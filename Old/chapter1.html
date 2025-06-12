@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: The Spectral Whisper</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif; /* A more thematic font */
+            margin: 0;
+            padding: 0; /* KEY CHANGE: Removed all padding from body */
+            background-color: #1a1a1a; /* Dark background */
+            color: #f0f0f0; /* Light text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            /* KEY CHANGE: Align content to the very top */
+            justify-content: flex-start;
+            min-height: 100vh; /* Keep this to ensure background covers full height */
+
+            background-image: url('placeholders/chapter1_background.jpg'); /* Placeholder background image */
+            background-size: cover; /* Cover the entire body */
+            background-position: center; /* Center the background image */
+            background-attachment: fixed; /* Keep background fixed when scrolling */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Subtle text shadow for readability */
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent overlay for text */
+            /* KEY CHANGE: Adjusted padding for container - reduced top padding */
+            padding: 20px 30px 30px 30px;
+            border-radius: 10px;
+            max-width: 1200px; /* Increased max-width significantly */
+            width: 95%; /* Take up even more of the screen width */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* Glowing box shadow */
+            margin-top: 0; /* Ensures no extra margin pushing it down */
+            margin-bottom: 20px; /* Keep some margin at the bottom for spacing */
+            text-align: center;
+        }
+
+        /* Styling for introductory text paragraphs */
+        .intro-text-paragraph { /* Class to apply same style to both paragraphs */
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 1.5em; /* Both paragraphs are still bigger */
+            font-weight: bold; /* Both paragraphs are still bold */
+            color: #00ffff; /* Both paragraphs are still cyan */
+        }
+
+        .items-list { /* Class for the comma-separated list */
+            list-style-type: none; /* No bullets */
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em; /* Ensure list text size is consistent */
+        }
+
+        .qr-code {
+            margin: 30px auto;
+            border: 2px solid #00ffff; /* Cyan border for QR code */
+            border-radius: 5px;
+            display: block; /* Ensures centering with margin: auto */
+            max-width: 200px; /* Max width for the QR code image */
+            height: auto;
+        }
+
+        .riddle-section h2 {
+            color: #ff00ff; /* Magenta color for the riddle */
+            font-size: 3em; /* Larger writing for the riddle */
+            margin-top: 40px;
+            margin-bottom: 30px;
+            font-family: 'Cinzel Decorative', cursive; /* A decorative font for emphasis */
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; /* Neon glow effect */
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            width: 70%;
+            max-width: 400px; /* Max width for input */
+            margin-right: 10px;
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.2em;
+            outline: none; /* Remove outline on focus */
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff00ff; /* Change border color on focus */
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); /* Glow on focus */
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #00ffff; /* Cyan button */
+            color: #1a1a1a;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ff00ff; /* Magenta on hover */
+            transform: scale(1.05);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 1.5em; /* Reserve space to prevent layout shift */
+        }
+
+        /* Styling for audio elements (optional, can be hidden) */
+        audio {
+            display: none; /* Hide audio controls by default */
+        }
+
+        /* Google Fonts Import (Optional, but recommended for custom fonts) */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Georgia&display=swap');
+    </style>
+</head>
+<body>
+    <audio id="chapter1Voice" src="voice1.mp3"></audio>
+    <audio id="chapter1Music" src="placeholders/chapter1_music.mp3" autoplay loop></audio>
+
+    <div class="container">
+        <p class="intro-text-paragraph">
+            Beware! There are restless spirits around! Use the ghost detector to find them. I can reveal there are only two haunted items tonight for which you'll need to detect ghosts. What could they be?
+        </p>
+
+        <img src="placeholders/qr_code_app.png" alt="QR Code to Ghost Detector App" class="qr-code">
+
+        <p class="intro-text-paragraph">
+            Once you have found the first spectral whisper, you may be able to solve the mystery of their untimely passing! Aid this restless spirit in uncovering the truth of their demise, and they may guide your path forward.
+        </p>
+
+        <p><strong>Things you can find:</strong></p>
+        <p class="items-list">
+            EctoPhone, full tarot card deck, tavern advertisement, widow’s letter, crystal ball riddle, singing busts, blacklight, tavern memento, message from Donna, letter from Leota, Light in the Mist cards, Instructions in the Mist, Visions in the Mist (2), suspect list, prophecy, musical note, handkerchief, cryptex
+        </p>
+
+        <div class="riddle-section">
+            <h2>Who killed Constance?</h2>
+            <input type="text" id="answerInput" placeholder="Type your answer here" autofocus>
+            <button id="submitAnswer">Submit</button>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitAnswerButton = document.getElementById('submitAnswer');
+        const feedbackMessage = document.getElementById('feedback');
+
+        const correctAnswers = [
+            "nitrokoff",
+            "alexander",
+            "alexander nitrokoff"
+        ];
+
+        submitAnswerButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+
+            const isCorrect = correctAnswers.some(answer =>
+                userAnswer === answer ||
+                userAnswer.includes(answer) ||
+                answer.includes(userAnswer)
+            );
+
+            if (isCorrect) {
+                feedbackMessage.textContent = "Correct! The spectral path clears...";
+                feedbackMessage.style.color = "#00ffff";
+                setTimeout(() => {
+                    window.location.href = 'reward1.html';
+                }, 1500);
+            } else {
+                feedbackMessage.textContent = "Incorrect. The spirits remain restless. Try again.";
+                feedbackMessage.style.color = "#ff0000";
+            }
+            answerInput.value = '';
+        });
+
+        answerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                submitAnswerButton.click();
+            }
+        });
+
+        // Get audio elements
+        const voiceAudio = document.getElementById('chapter1Voice');
+        const musicAudio = document.getElementById('chapter1Music');
+
+        // This part attempts to autoplay music. Chrome will likely block it unless it's muted
+        // or there has been prior significant user interaction on the domain.
+        // It's recommended to add a button for music playback too if you want it to play reliably unmuted.
+        musicAudio.play().catch(e => console.log("Music audio autoplay blocked:", e.message));
+
+
+        // NEW: Listen for spacebar press to play voice audio and focus input
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') { // 'Space' is more modern than 'Spacebar'
+                event.preventDefault(); // Prevent default spacebar action (e.g., page scroll)
+
+                voiceAudio.play().then(() => {
+                    console.log("Voice audio started by spacebar.");
+                    answerInput.focus(); // Focus the input field
+                }).catch(e => {
+                    console.error("Voice audio playback failed on spacebar press:", e.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
